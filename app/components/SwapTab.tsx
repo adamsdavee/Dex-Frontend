@@ -59,7 +59,7 @@ const SwapTab = ({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="0x650ADf6aA8b4e5764273E7f2001B2A3f792859a5">APT</SelectItem>
-                    <SelectItem value="0x456...CHT">CHT</SelectItem>
+                    <SelectItem value="0x1b5619EB448B3C5F1E44CcD4Ef5e1813A53E98fF">CHT</SelectItem>
                     <SelectItem value="0x789...DAI">DAI</SelectItem>
                   </SelectContent>
                 </Select>
@@ -68,14 +68,14 @@ const SwapTab = ({
             <div>
               <Label htmlFor="to-token">To</Label>
               <div className="flex mt-1">
-                {/* <Input
+                <Input
                   id="to-token"
                   placeholder="0.0"
                   className="rounded-r-none"
                   value={Amount}
                   onChange={(e) => setAmount(e.target.value)}
-                /> */}
-                {/* <Select onValueChange={(value) => setRecipientAddress(value)}>
+                />
+                <Select onValueChange={(value) => setRecipientAddress(value)}>
                   <SelectTrigger className="w-40 rounded-l-none">
                     <SelectValue placeholder="Select token" />
                   </SelectTrigger>
@@ -84,10 +84,10 @@ const SwapTab = ({
                     <SelectItem value="0xdef...USDC">USDC</SelectItem>
                     <SelectItem value="0xghi...DAI">DAI</SelectItem>
                   </SelectContent>
-                </Select> */}
+                </Select>
               </div>
             </div>
-            <ApproveButton recipientAddress={recipientAddress} Amount={Amount} setRecipientAddress={setRecipientAddress} setAmount={setAmount} />
+            <ApproveButton recipientAddress={recipientAddress} Amount={Amount} setAmount={setAmount} />
             <SwapButton recipientAddress={recipientAddress} Amount={Amount} setRecipientAddress={setRecipientAddress} setAmount={setAmount} />
           </div>
         </CardContent>

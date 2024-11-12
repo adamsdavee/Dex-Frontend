@@ -7,19 +7,17 @@ import { useSendTransaction } from "thirdweb/react";
 const ApproveButton = ({
   recipientAddress,
   Amount,
-  setRecipientAddress,
   setAmount,
 }: {
   recipientAddress: string;
   Amount: string;
-  setRecipientAddress: (address: string) => void;
   setAmount: (amount: string) => void;
 }) => {
 
         
     const contract = getContract({
         client,
-        address: "0x1b5619EB448B3C5F1E44CcD4Ef5e1813A53E98fF",
+        address: recipientAddress,
         chain: sepolia,
       });
     
@@ -47,13 +45,12 @@ const ApproveButton = ({
 
             // You'll need to get the user's address from your wallet connection
             // This is just a placeholder - replace with actual wallet address
-            const userAddress = "0xfBB519275F548b86297878956985045A9f73Aa8B";
+            const routerAddress = "0xb7e2979167e46A03Cf44171c349945D7041B6C2D";
 
-            await Approve(recipientAddress, amount);
+            await Approve(routerAddress, amount);
 
             // Optional: Clear inputs after successful mint
             setAmount("");
-            setRecipientAddress("");
 
             alert("Tokens Approved"); // Not working properly
           } catch (error) {
