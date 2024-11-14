@@ -6,7 +6,7 @@ import { client } from "../client";
 import { getContract, prepareContractCall } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
 
-const SwapButton = ({Amount, recipientAddress, setAmount, setRecipientAddress}: {Amount: string, recipientAddress: string, setAmount: (amount: string) => void, setRecipientAddress: (address: string) => void}) => {
+const SwapButton = ({addressOne, addressTwo, amountOne, amountTwo, setAmountOne, setAmountTwo}: {addressOne: string, addressTwo: string, amountOne: string, amountTwo: string, setAddressOne: (address: string) => void, setAddressTwo: (address: string) => void, setAmountOne: (amount: string) => void, setAmountTwo: (amount: string) => void}) => {
 
     const contract = getContract({
       client,
@@ -19,7 +19,7 @@ const SwapButton = ({Amount, recipientAddress, setAmount, setRecipientAddress}: 
     const SwapTokens = async (amountIn: bigint, amountOut: bigint, path: string[]) => {
       const swap = prepareContractCall({
         contract,
-        method: "function swapExactTokensForTokens(uint256 amountIn, uint256 amountOutMin, address[] memory path)",
+        method: "function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] memory path)",
         params: [amountIn, amountOut, path], // type safe params
       });
       sendTransaction(swap);
@@ -33,18 +33,20 @@ const SwapButton = ({Amount, recipientAddress, setAmount, setRecipientAddress}: 
                         onClick={async () => {
                           try {
                             // Convert the amount to BigInt (assuming 18 decimals)
-                            const amount = BigInt(parseFloat(Amount) * 1e18);
+                            const amountIn = BigInt(Number(amountOne) * 1e18);
+
+                            // TODO: Get the amount out from the contract
+                            const amountOut = BigInt(Number(amountTwo) * 1e18);
 
                             // You'll need to get the user's address from your wallet connection
                             // This is just a placeholder - replace with actual wallet address
-                            const userAddress =
-                              "0xF5c87bFCE1999d3E48f0407E43F0Db10394A4B37";
 
-                            await SwapTokens(amount, amount, [recipientAddress]);
+                            await SwapTokens(amountIn, amountOut, [addressOne, addressTwo]);
 
                             // Optional: Clear inputs after successful mint
-                            setAmount("");
-                            setRecipientAddress("");
+                            setAmountOne("");
+                            setAmountTwo("");
+                            alert("Swap successful");
                           } catch (error) {
                             console.log("Error during swap:", error);
                             alert("Error during swap: " + error);

@@ -36,6 +36,14 @@ const Cardd = ({activeTab, setActiveTab}: {activeTab: string, setActiveTab: (tab
                     <BarChart3 className="mr-2 h-4 w-4" />
                     Investments
                   </Button>
+                  <Button
+                    variant={activeTab === "mint" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    onClick={() => setActiveTab("mint")}
+                  >
+                    <BarChart3 className="mr-2 h-4 w-4" />
+                    Mint
+                  </Button>
                 </nav>
               </CardContent>
             </Card>

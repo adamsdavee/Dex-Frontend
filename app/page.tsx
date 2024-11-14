@@ -35,13 +35,18 @@ import Header from "./components/Header";
 import Footer from "./components/footer";
 import Cardd from "./components/Card";
 import SwapTab from "./components/SwapTab";
+import LiquidityTab from "./components/Liquidity/LiquidityTab";
+import MintTab from "./components/Mint/MintTab";
 
 export default function RefinedDEXInterface() {
   const [activeTab, setActiveTab] = useState("swap");
-  const [Amount, setAmount] = useState("");
-  const [recipientAddress, setRecipientAddress] = useState("");
-  const [fromToken, setFromToken] = useState("");
-  const [toToken, setToToken] = useState("");
+
+  const [amountOne, setAmountOne] = useState("");
+  const [amountTwo, setAmountTwo] = useState("");
+  const [addressOne, setAddressOne] = useState("");
+  const [addressTwo, setAddressTwo] = useState("");
+
+
   const contract = getContract({
     client,
     address: "0xb7e2979167e46A03Cf44171c349945D7041B6C2D",
@@ -61,19 +66,6 @@ export default function RefinedDEXInterface() {
     sendTransaction(approve);
   };
 
-  const Transfer = async (address: string, addresss: string) => {
-    const amount = BigInt(30000000000000000000);
-    const amountt = BigInt(20000000000000000000);
-
-    const transaction = prepareContractCall({
-      contract,
-      method:
-        "function addLiquidity(address from, address to, uint256 amount, uint256 amount, uint256 amountt, uint256 amountt)",
-      params: [address, addresss, amount, amount, amountt, amountt], // type safe params
-    });
-    sendTransaction(transaction);
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50 text-gray-900">
       <div className="container mx-auto px-4 py-8">
@@ -88,62 +80,10 @@ export default function RefinedDEXInterface() {
           <main className="col-span-9">
             <Tabs value={activeTab} className="w-full">
               <TabsContent value="swap">
-                <SwapTab recipientAddress={recipientAddress} Amount={Amount} setRecipientAddress={setRecipientAddress} setAmount={setAmount} />
+                <SwapTab amountOne={amountOne} amountTwo={amountTwo} setAmountOne={setAmountOne} setAmountTwo={setAmountTwo} addressOne={addressOne} addressTwo={addressTwo} setAddressOne={setAddressOne} setAddressTwo={setAddressTwo}/>
               </TabsContent>
               <TabsContent value="liquidity">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Provide Liquidity</CardTitle>
-                    <CardDescription>
-                      Add liquidity to earn fees from trades
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
-                      <div>
-                        <Label htmlFor="token-a">Token A</Label>
-                        <div className="flex mt-1">
-                          <Input
-                            id="token-a"
-                            placeholder="0.0"
-                            className="rounded-r-none"
-                          />
-                          <Select>
-                            <SelectTrigger className="w-40 rounded-l-none">
-                              <SelectValue placeholder="Select token" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="eth">ETH</SelectItem>
-                              <SelectItem value="usdc">USDC</SelectItem>
-                              <SelectItem value="dai">DAI</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <div>
-                        <Label htmlFor="token-b">Token B</Label>
-                        <div className="flex mt-1">
-                          <Input
-                            id="token-b"
-                            placeholder="0.0"
-                            className="rounded-r-none"
-                          />
-                          <Select>
-                            <SelectTrigger className="w-40 rounded-l-none">
-                              <SelectValue placeholder="Select token" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="eth">ETH</SelectItem>
-                              <SelectItem value="usdc">USDC</SelectItem>
-                              <SelectItem value="dai">DAI</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                      </div>
-                      <Button className="w-full">Add Liquidity</Button>
-                    </div>
-                  </CardContent>
-                </Card>
+                <LiquidityTab amountOne={amountOne} amountTwo={amountTwo} setAmountOne={setAmountOne} setAmountTwo={setAmountTwo} addressOne={addressOne} addressTwo={addressTwo} setAddressOne={setAddressOne} setAddressTwo={setAddressTwo}/>
               </TabsContent>
               <TabsContent value="investments">
                 <div className="grid gap-6">
@@ -243,6 +183,9 @@ export default function RefinedDEXInterface() {
                     </CardContent>
                   </Card>
                 </div>
+              </TabsContent>
+              <TabsContent value="mint">
+                <MintTab amountOne={amountOne} setAmountOne={setAmountOne} addressOne={addressOne} addressTwo={addressTwo} setAddressOne={setAddressOne} setAddressTwo={setAddressTwo}/>
               </TabsContent>
             </Tabs>
           </main>

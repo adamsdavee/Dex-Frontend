@@ -2,31 +2,29 @@
 import { Button } from "@/components/ui/button";
 import { getContract, prepareContractCall } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
-import { client } from "../client";
+import { client } from "../../client";
 import { useSendTransaction } from "thirdweb/react";
-const ApproveButton = ({
+const MintButton = ({
   addressOne,
+  addressTwo,
   setAddressOne,
   amountOne,
   setAmountOne, 
-}: {addressOne: string, setAddressOne: (address: string) => void, amountOne: string, setAmountOne: (amount: string) => void}) => {
+}: {addressOne: string, addressTwo: string, setAddressOne: (address: string) => void, amountOne: string, setAmountOne: (amount: string) => void}) => {
 
         
     const contract = getContract({
         client,
-        address: addressOne,
+        address: addressTwo,
         chain: sepolia,
       });
     
       const { mutate: sendTransaction } = useSendTransaction();
 
-    const Approve = async (address: string, amount: bigint) => {
-
-
-          
+      const Mint = async (address: string, amount: bigint) => {
         const approve = prepareContractCall({
           contract,
-          method: "function approve(address to, uint256 amount)",
+          method: "function mint(address to, uint256 amount)",
           params: [address, amount], // type safe params
         });
         sendTransaction(approve);
@@ -42,25 +40,24 @@ const ApproveButton = ({
 
             // You'll need to get the user's address from your wallet connection
             // This is just a placeholder - replace with actual wallet address
-            const routerAddress = "0xb7e2979167e46A03Cf44171c349945D7041B6C2D";
 
-            await Approve(routerAddress, amount);
+            await Mint(addressOne, amount);
 
             // Optional: Clear inputs after successful mint
             setAmountOne("");
 
-            alert("Tokens Approved"); // Not working properly
+            alert("Tokens Minted"); // Not working properly
           } catch (error) {
-            console.log("Error during swap:", error);
-            alert("Error during swap: " + error);
+            console.log("Error during mint:", error);
+            alert("Error during mint: " + error);
             // You might want to show an error message to the user
           }
         }}
       >
-        Approve Tokens
+        Mint Tokens
       </Button>
     </>
   );
 };
 
-export default ApproveButton;
+export default MintButton;
