@@ -16,7 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import SwapButton from "../SwapButton";
+import SwapButton from "../Swap/SwapButton";
 import ApproveButton from "../ApproveButton";
 import AddLiquidityButton from "./AddLiquidityButton";
 

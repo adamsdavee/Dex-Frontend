@@ -4,6 +4,8 @@ import { getContract, prepareContractCall } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
 import { client } from "../client";
 import { useSendTransaction } from "thirdweb/react";
+import { toast } from 'react-hot-toast';
+
 const ApproveButton = ({
   addressOne,
   setAddressOne,
@@ -21,46 +23,76 @@ const ApproveButton = ({
       const { mutate: sendTransaction } = useSendTransaction();
 
     const Approve = async (address: string, amount: bigint) => {
-
-
-          
         const approve = prepareContractCall({
           contract,
           method: "function approve(address to, uint256 amount)",
-          params: [address, amount], // type safe params
+          params: [address, amount],
         });
-        sendTransaction(approve);
-      };
-  return (
-    <>
-      <Button
-        className="w-full"
-        onClick={async () => {
-          try {
-            // Convert the amount to BigInt (assuming 18 decimals)
-            const amount = BigInt(Number(amountOne) * 10 ** 18);
+        return new Promise((resolve, reject) => {
+          sendTransaction(approve, {
+            onSuccess: () => resolve(true),
+            onError: (error) => reject(error),
+          });
+        });
+    };
 
-            // You'll need to get the user's address from your wallet connection
-            // This is just a placeholder - replace with actual wallet address
-            const routerAddress = "0xb7e2979167e46A03Cf44171c349945D7041B6C2D";
+    return (
+      <>
+        <Button
+          className="w-full"
+          onClick={async () => {
+            const loadingToast = toast.loading('Approving Tokens...', {
+              position: 'top-left',
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              },
+            });
 
-            await Approve(routerAddress, amount);
+            try {
+              const amount = BigInt(Number(amountOne) * 10 ** 18);
+              const routerAddress = "0xb7e2979167e46A03Cf44171c349945D7041B6C2D";
 
-            // Optional: Clear inputs after successful mint
-            setAmountOne("");
-
-            alert("Tokens Approved"); // Not working properly
-          } catch (error) {
-            console.log("Error during swap:", error);
-            alert("Error during swap: " + error);
-            // You might want to show an error message to the user
-          }
-        }}
-      >
-        Approve Tokens
-      </Button>
-    </>
-  );
+              await Approve(routerAddress, amount);
+              setAmountOne("");
+              
+              toast.dismiss(loadingToast);
+              toast.success('Tokens Approved Successfully! ✅', {
+                position: 'top-left',
+                duration: 4000,
+                style: {
+                  borderRadius: '10px',
+                  background: '#333',
+                  color: '#fff',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                },
+                iconTheme: {
+                  primary: '#4ade80',
+                  secondary: '#fff',
+                },
+              });
+            } catch (error: any) {
+              toast.dismiss(loadingToast);
+              toast.error(`Approval Failed: ${error.message}`, {
+                position: 'top-left',
+                duration: 5000,
+                style: {
+                  borderRadius: '10px',
+                  background: '#333',
+                  color: '#fff',
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                },
+              });
+              console.log("Error during approval:", error);
+            }
+          }}
+        >
+          Approve Tokens
+        </Button>
+      </>
+    );
 };
 
 export default ApproveButton;

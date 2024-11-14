@@ -34,7 +34,7 @@ import { sepolia } from "thirdweb/chains";
 import Header from "./components/Header";
 import Footer from "./components/footer";
 import Cardd from "./components/Card";
-import SwapTab from "./components/SwapTab";
+import SwapTab from "./components/Swap/SwapTab";
 import LiquidityTab from "./components/Liquidity/LiquidityTab";
 import MintTab from "./components/Mint/MintTab";
 

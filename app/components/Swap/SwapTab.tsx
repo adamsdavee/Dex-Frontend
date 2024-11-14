@@ -17,7 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import SwapButton from "./SwapButton";
-import ApproveButton from "./ApproveButton";
+import ApproveButton from "../ApproveButton";
 
 const SwapTab = ({amountOne, amountTwo, setAmountOne, setAmountTwo, addressOne, addressTwo, setAddressOne, setAddressTwo}: {amountOne: string, amountTwo: string, setAmountOne: (amount: string) => void, setAmountTwo: (amount: string) => void, addressOne: string, addressTwo: string, setAddressOne: (address: string) => void, setAddressTwo: (address: string) => void}) => {
   return (

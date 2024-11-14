@@ -61,7 +61,7 @@ const AddLiquidityButton = ({
         className="w-full"
         onClick={async () => {
           const loadingToast = toast.loading('Adding Liquidity...', {
-            position: 'top-right',
+            position: 'top-left',
             style: {
               borderRadius: '10px',
               background: '#333',
@@ -88,7 +88,7 @@ const AddLiquidityButton = ({
             
             toast.dismiss(loadingToast);
             toast.success('Liquidity Added Successfully! 🌊', {
-              position: 'top-right',
+              position: 'top-left',
               duration: 4000,
               style: {
                 borderRadius: '10px',
@@ -104,7 +104,7 @@ const AddLiquidityButton = ({
           } catch (error: any) {
             toast.dismiss(loadingToast);
             toast.error(`Failed to add liquidity: ${error.message}`, {
-              position: 'top-right',
+              position: 'top-left',
               duration: 5000,
               style: {
                 borderRadius: '10px',

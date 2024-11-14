@@ -2,7 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { toast } from 'react-hot-toast';
 import { useSendTransaction } from "thirdweb/react";
-import { client } from "../client";
+import { client } from "../../client";
 import { getContract, prepareContractCall } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
 
@@ -37,7 +37,7 @@ const SwapButton = ({addressOne, addressTwo, amountOne, amountTwo, setAmountOne,
                         className="w-full"
                         onClick={async () => {
                           const loadingToast = toast.loading('Swapping Tokens...', {
-                            position: 'top-right',
+                            position: 'top-left',
                             style: {
                               borderRadius: '10px',
                               background: '#333',
@@ -57,7 +57,7 @@ const SwapButton = ({addressOne, addressTwo, amountOne, amountTwo, setAmountOne,
                             
                             toast.dismiss(loadingToast);
                             toast.success('Swap Completed Successfully! 💱', {
-                              position: 'top-right',
+                              position: 'top-left',
                               duration: 4000,
                               style: {
                                 borderRadius: '10px',
@@ -73,7 +73,7 @@ const SwapButton = ({addressOne, addressTwo, amountOne, amountTwo, setAmountOne,
                           } catch (error: any) {
                             toast.dismiss(loadingToast);
                             toast.error(`Swap Failed: ${error.message}`, {
-                              position: 'top-right',
+                              position: 'top-left',
                               duration: 5000,
                               style: {
                                 borderRadius: '10px',
