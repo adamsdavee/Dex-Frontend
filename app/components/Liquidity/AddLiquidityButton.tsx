@@ -4,6 +4,7 @@ import { getContract, prepareContractCall } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
 import { client } from "../../client";
 import { useSendTransaction } from "thirdweb/react";
+import { toast } from 'react-hot-toast';
 
 
 const AddLiquidityButton = ({
@@ -44,9 +45,14 @@ const AddLiquidityButton = ({
       contract,
       method:
         "function addLiquidity(address tokenA, address tokenB, uint256 amountOfTokenADesired, uint256 amountOfTokenBDesired, uint256 minTokenA, uint256 minTokenB)",
-      params: [addressOne, addressTwo, amountOne, amountTwo, minTokenA, minTokenB], // type safe params
+      params: [addressOne, addressTwo, amountOne, amountTwo, minTokenA, minTokenB],
     });
-    sendTransaction(addLiquidity);
+    return new Promise((resolve, reject) => {
+      sendTransaction(addLiquidity, {
+        onSuccess: () => resolve(true),
+        onError: (error) => reject(error),
+      });
+    });
   };
 
   return (
@@ -54,13 +60,19 @@ const AddLiquidityButton = ({
       <Button
         className="w-full"
         onClick={async () => {
+          const loadingToast = toast.loading('Adding Liquidity...', {
+            position: 'top-right',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+            },
+          });
+
           try {
-            // Convert the amount to BigInt (assuming 18 decimals)
             const amountA = BigInt(Number(amountOne) * 10 ** 18);
             const amountB = BigInt(Number(amountTwo) * 10 ** 18);
-
-            // You'll need to get the user's address from your wallet connection
-            // This is just a placeholder - replace with actual wallet addres
 
             await AddLiquidity(
               addressOne,
@@ -71,14 +83,37 @@ const AddLiquidityButton = ({
               BigInt(0)
             );
 
-            // Optional: Clear inputs after successful mint
             setAmountOne("");
             setAmountTwo("");
-            alert("Liquidity Added"); // Not working properly
-          } catch (error) {
-            console.log("Error during swap:", error);
-            alert("Error during swap: " + error);
-            // You might want to show an error message to the user
+            
+            toast.dismiss(loadingToast);
+            toast.success('Liquidity Added Successfully! 🌊', {
+              position: 'top-right',
+              duration: 4000,
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              },
+              iconTheme: {
+                primary: '#4ade80',
+                secondary: '#fff',
+              },
+            });
+          } catch (error: any) {
+            toast.dismiss(loadingToast);
+            toast.error(`Failed to add liquidity: ${error.message}`, {
+              position: 'top-right',
+              duration: 5000,
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              },
+            });
+            console.log("Error during liquidity addition:", error);
           }
         }}
       >

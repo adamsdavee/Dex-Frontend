@@ -1,7 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
-
-import {  useSendTransaction } from "thirdweb/react";
+import { toast } from 'react-hot-toast';
+import { useSendTransaction } from "thirdweb/react";
 import { client } from "../client";
 import { getContract, prepareContractCall } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
@@ -20,9 +20,14 @@ const SwapButton = ({addressOne, addressTwo, amountOne, amountTwo, setAmountOne,
       const swap = prepareContractCall({
         contract,
         method: "function swapExactTokensForTokens(uint amountIn, uint amountOutMin, address[] memory path)",
-        params: [amountIn, amountOut, path], // type safe params
+        params: [amountIn, amountOut, path],
       });
-      sendTransaction(swap);
+      return new Promise((resolve, reject) => {
+        sendTransaction(swap, {
+          onSuccess: () => resolve(true),
+          onError: (error) => reject(error),
+        });
+      });
     };
   
 
@@ -31,26 +36,53 @@ const SwapButton = ({addressOne, addressTwo, amountOne, amountTwo, setAmountOne,
    <Button
                         className="w-full"
                         onClick={async () => {
+                          const loadingToast = toast.loading('Swapping Tokens...', {
+                            position: 'top-right',
+                            style: {
+                              borderRadius: '10px',
+                              background: '#333',
+                              color: '#fff',
+                              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                            },
+                          });
+
                           try {
-                            // Convert the amount to BigInt (assuming 18 decimals)
                             const amountIn = BigInt(Number(amountOne) * 1e18);
-
-                            // TODO: Get the amount out from the contract
                             const amountOut = BigInt(Number(amountTwo) * 1e18);
-
-                            // You'll need to get the user's address from your wallet connection
-                            // This is just a placeholder - replace with actual wallet address
 
                             await SwapTokens(amountIn, amountOut, [addressOne, addressTwo]);
 
-                            // Optional: Clear inputs after successful mint
                             setAmountOne("");
                             setAmountTwo("");
-                            alert("Swap successful");
-                          } catch (error) {
+                            
+                            toast.dismiss(loadingToast);
+                            toast.success('Swap Completed Successfully! 💱', {
+                              position: 'top-right',
+                              duration: 4000,
+                              style: {
+                                borderRadius: '10px',
+                                background: '#333',
+                                color: '#fff',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                              },
+                              iconTheme: {
+                                primary: '#4ade80',
+                                secondary: '#fff',
+                              },
+                            });
+                          } catch (error: any) {
+                            toast.dismiss(loadingToast);
+                            toast.error(`Swap Failed: ${error.message}`, {
+                              position: 'top-right',
+                              duration: 5000,
+                              style: {
+                                borderRadius: '10px',
+                                background: '#333',
+                                color: '#fff',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+                              },
+                            });
                             console.log("Error during swap:", error);
-                            alert("Error during swap: " + error);
-                            // You might want to show an error message to the user
                           }
                         }}
                       >

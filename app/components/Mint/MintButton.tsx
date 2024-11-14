@@ -4,6 +4,8 @@ import { getContract, prepareContractCall } from "thirdweb";
 import { sepolia } from "thirdweb/chains";
 import { client } from "../../client";
 import { useSendTransaction } from "thirdweb/react";
+import { toast } from 'react-hot-toast';
+
 const MintButton = ({
   addressOne,
   addressTwo,
@@ -27,30 +29,59 @@ const MintButton = ({
           method: "function mint(address to, uint256 amount)",
           params: [address, amount], // type safe params
         });
-        sendTransaction(approve);
+        return new Promise((resolve, reject) => {
+            sendTransaction(approve, {
+              onSuccess: () => resolve(true),
+              onError: (error) => reject(error),
+            });
+          });
       };
   return (
     <>
       <Button
         className="w-full"
         onClick={async () => {
+          const loadingToast = toast.loading('Minting Tokens...', {
+            position: 'top-left',
+            style: {
+              borderRadius: '10px',
+              background: '#333',
+              color: '#fff',
+            },
+          });
+
           try {
-            // Convert the amount to BigInt (assuming 18 decimals)
             const amount = BigInt(Number(amountOne) * 10 ** 18);
-
-            // You'll need to get the user's address from your wallet connection
-            // This is just a placeholder - replace with actual wallet address
-
             await Mint(addressOne, amount);
-
-            // Optional: Clear inputs after successful mint
             setAmountOne("");
-
-            alert("Tokens Minted"); // Not working properly
-          } catch (error) {
+            
+            // Dismiss loading toast and show success toast
+            toast.dismiss(loadingToast);
+            toast.success('Tokens Minted Successfully! 🎉', {
+              position: 'top-left',
+              duration: 4000,
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+              iconTheme: {
+                primary: '#4ade80',
+                secondary: '#fff',
+              },
+            });
+          } catch (error: any) {
+            toast.dismiss(loadingToast);
+            toast.error('Failed to mint: ' + error.message, {
+              position: 'top-left',
+              duration: 4000,
+              style: {
+                borderRadius: '10px',
+                background: '#333',
+                color: '#fff',
+              },
+            });
             console.log("Error during mint:", error);
-            alert("Error during mint: " + error);
-            // You might want to show an error message to the user
           }
         }}
       >
